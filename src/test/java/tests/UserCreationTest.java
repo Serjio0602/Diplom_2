@@ -1,7 +1,6 @@
 package tests;
 
 import client.UserClient;
-import com.github.javafaker.Faker;
 import helper.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
