@@ -1,5 +1,6 @@
 package client;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.User;
 
@@ -11,6 +12,7 @@ public class UserClient extends RestAssuredClient{
     private static final String LOGIN_PATH = "/api/auth/login";
     private static final String USER_PATH = "/api/auth/user";
 
+    @Step("Отправка POST-запроса на регистрацию пользователя")
     public Response register(User user){
         return given()
                 .spec(getBaseSpec())
@@ -19,6 +21,7 @@ public class UserClient extends RestAssuredClient{
                 .post(REGISTER_PATH);
     }
 
+    @Step("Отправка POST-запроса для логина пользователя")
     public Response login(User user){
         return given()
                 .spec(getBaseSpec())
@@ -27,6 +30,7 @@ public class UserClient extends RestAssuredClient{
                 .post(LOGIN_PATH);
     }
 
+    @Step("Отправка DELETE-запроса для удаления пользователя")
     public Response delete(String accessToken){
         return given()
                 .spec(getBaseSpec())

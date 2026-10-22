@@ -1,5 +1,6 @@
 package client;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import model.Order;
 
@@ -9,6 +10,7 @@ public class OrderClient extends RestAssuredClient{
 
     private static final String ORDER_PATH = "/api/orders";
 
+    @Step("Создание заказа")
     public Response createOrder(Order order, String accessToken) {
 
         return given()
