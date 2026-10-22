@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -31,7 +33,7 @@ public class UserCreationTest {
 
         response.then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("accessToken", notNullValue());
 
@@ -44,12 +46,12 @@ public class UserCreationTest {
         Response response = userClient.register(user);
         response.then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
 
         Response response2 = userClient.register(user);
         response2.then()
                 .assertThat()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("User already exists"));
     }
@@ -62,7 +64,7 @@ public class UserCreationTest {
         Response response = userClient.register(userWithoutRequiredField);
         response.then()
                 .assertThat()
-                .statusCode(403)
+                .statusCode(SC_FORBIDDEN)
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
     }

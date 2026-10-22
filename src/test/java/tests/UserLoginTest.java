@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -31,12 +33,12 @@ public class UserLoginTest {
         Response response = userClient.register(user);
         response.then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
 
         Response response2 = userClient.login(user);
         response2.then()
                 .assertThat()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("accessToken", notNullValue());
 
@@ -49,7 +51,7 @@ public class UserLoginTest {
         Response response = userClient.register(user);
         response.then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
 
         accessToken = response.path("accessToken");
 
@@ -57,7 +59,7 @@ public class UserLoginTest {
         Response response2 = userClient.login(incorrectPassUser);
         response2.then()
                 .assertThat()
-                .statusCode(401)
+                .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
                 .body("message", equalTo("email or password are incorrect"));
     }
@@ -68,7 +70,7 @@ public class UserLoginTest {
         Response response = userClient.register(user);
         response.then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(SC_OK);
 
         accessToken = response.path("accessToken");
 
@@ -76,7 +78,7 @@ public class UserLoginTest {
         Response response2 = userClient.login(incorrectEmailUser);
         response2.then()
                 .assertThat()
-                .statusCode(401)
+                .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
                 .body("message", equalTo("email or password are incorrect"));
     }
