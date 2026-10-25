@@ -24,40 +24,33 @@ public class UserLoginTest {
     public void setUp() {
         userClient = new UserClient();
         user = UserGenerator.getRandomUser();
+
+        Response response = userClient.register(user);
+        accessToken = response.path("accessToken");
     }
 
     @Test
     @DisplayName("Успешный логин существующего пользователя")
     public void loginUserTest(){
 
-        Response response = userClient.register(user);
-        response.then()
-                .assertThat()
-                .statusCode(SC_OK);
 
-        Response response2 = userClient.login(user);
-        response2.then()
+        Response response = userClient.login(user);
+        response.then()
                 .assertThat()
                 .statusCode(SC_OK)
                 .body("success", equalTo(true))
                 .body("accessToken", notNullValue());
 
-        accessToken = response2.path("accessToken");
+        accessToken = response.path("accessToken");
     }
 
     @Test
     @DisplayName("Ошибка 401 при логине с неверным паролем")
     public void loginWithIncorrectPasswordTest(){
-        Response response = userClient.register(user);
-        response.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = response.path("accessToken");
 
         User incorrectPassUser = new User(user.getEmail(), "wrongPassword111");
-        Response response2 = userClient.login(incorrectPassUser);
-        response2.then()
+        Response response = userClient.login(incorrectPassUser);
+        response.then()
                 .assertThat()
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
@@ -67,16 +60,10 @@ public class UserLoginTest {
     @Test
     @DisplayName("Ошибка 401 при логине с неверным email")
     public void loginWithIncorrectEmailTest(){
-        Response response = userClient.register(user);
-        response.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = response.path("accessToken");
 
         User incorrectEmailUser = new User("wrongEmail333@ya.ru", user.getPassword());
-        Response response2 = userClient.login(incorrectEmailUser);
-        response2.then()
+        Response response = userClient.login(incorrectEmailUser);
+        response.then()
                 .assertThat()
                 .statusCode(SC_UNAUTHORIZED)
                 .body("success", equalTo(false))
