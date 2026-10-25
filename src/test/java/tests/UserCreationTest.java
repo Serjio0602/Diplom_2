@@ -57,10 +57,36 @@ public class UserCreationTest {
     }
 
     @Test
-    @DisplayName("Ошибка 403 при создании пользователя с незаполненным обязательным полем")
-    public void createUserWithoutRequiredFieldTest(){
+    @DisplayName("Ошибка 403 при создании пользователя без имени")
+    public void createUserWithoutNameFieldTest(){
 
         User userWithoutRequiredField = new User(UserGenerator.getRandomUser().getEmail(), UserGenerator.getRandomUser().getPassword());
+        Response response = userClient.register(userWithoutRequiredField);
+        response.then()
+                .assertThat()
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    @Test
+    @DisplayName("Ошибка 403 при создании пользователя без Email")
+    public void createUserWithoutEmailFieldTest(){
+
+        User userWithoutRequiredField = new User(UserGenerator.getRandomUser().getName(), UserGenerator.getRandomUser().getPassword());
+        Response response = userClient.register(userWithoutRequiredField);
+        response.then()
+                .assertThat()
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+    }
+
+    @Test
+    @DisplayName("Ошибка 403 при создании пользователя без пароля")
+    public void createUserWithoutPasswordFieldTest(){
+
+        User userWithoutRequiredField = new User(UserGenerator.getRandomUser().getName(), UserGenerator.getRandomUser().getEmail());
         Response response = userClient.register(userWithoutRequiredField);
         response.then()
                 .assertThat()
