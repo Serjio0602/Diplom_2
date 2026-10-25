@@ -20,25 +20,21 @@ public class OrderCreationTest {
 
     private UserClient userClient;
     private OrderClient orderClient;
-    private User user;
     private String accessToken;
 
     @Before
     public void setUp(){
         userClient = new UserClient();
         orderClient = new OrderClient();
-        user = UserGenerator.getRandomUser();
+        User user = UserGenerator.getRandomUser();
+
+        Response registerResponse = userClient.register(user);
+        accessToken = registerResponse.path("accessToken");
     }
 
     @Test
     @DisplayName("Успешный заказ с авторизацией")
     public void createOrderWithAuthTest(){
-        Response registerResponse = userClient.register(user);
-        registerResponse.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = registerResponse.path("accessToken");
 
         Response ingredientsResponse = orderClient.getIngredients();
         List<String> ingredientIds = ingredientsResponse.path("data._id");
@@ -70,12 +66,6 @@ public class OrderCreationTest {
     @Test
     @DisplayName("Успешный заказ с ингредиентами")
     public void createOrderWithIngredientsTest(){
-        Response registerResponse = userClient.register(user);
-        registerResponse.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = registerResponse.path("accessToken");
 
         Response ingredientsResponse = orderClient.getIngredients();
         List<String> ingredientIds = ingredientsResponse.path("data._id");
@@ -92,12 +82,6 @@ public class OrderCreationTest {
     @Test
     @DisplayName("Ошибка 400 при заказе без ингредиентов")
     public void createOrderWithNoIngredientsTest(){
-        Response registerResponse = userClient.register(user);
-        registerResponse.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = registerResponse.path("accessToken");
 
         Order order = new Order();
         Response orderResponse = orderClient.createOrder(order, accessToken);
@@ -111,12 +95,6 @@ public class OrderCreationTest {
     @Test
     @DisplayName("Ошибка 500 при передаче неверного хэша ингредиента")
     public void createOrderWithIncorrectHashTest() {
-        Response registerResponse = userClient.register(user);
-        registerResponse.then()
-                .assertThat()
-                .statusCode(SC_OK);
-
-        accessToken = registerResponse.path("accessToken");
 
         List<String> incorrectHashIngredient = List.of("ingredient_hash_123");
 
